@@ -29,7 +29,7 @@ libbfd/libbfd.idl: libbfd/bfdarch.idl
 
 libbfd/bfdarch.idl:
 	echo '#include "bfd.h"' \
-		| $(CC) -E -xc - \
+		| $(CC) -DPACKAGE -E -xc - \
 		| awk 'BEGIN { go=0; } /^enum bfd_architecture$$/ { go=1; } \
 		       go && $$0 != "" { print; } \
 		       /machine_t/ { print; } \
@@ -39,6 +39,7 @@ libbfd/bfdarch.idl:
 		  > libbfd/bfdarch.idl
 
 install: depcheck all
+	@ocamlfind remove libbil
 	ocamlfind install libbil META \
 		_build/src/bil.a \
 		_build/src/bil.cmxa \
@@ -61,9 +62,7 @@ install: depcheck all
 		_build/src/cfg_ast.cmi \
 		_build/src/cfg_ast.mli \
 		_build/src/big_int_convenience.cmi \
-		_build/dllbfdarch_stubs.so \
 		_build/libbfdarch_stubs.a \
-		_build/dllbfdwrap_stubs.so \
 		_build/libbfdwrap_stubs.a
 
 .PHONY: all clean depcheck install
